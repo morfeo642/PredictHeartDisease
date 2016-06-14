@@ -1,4 +1,4 @@
-function [bestConfig] = geneticoKNN(infoAtr, data)
+function [bestConfig] = geneticoKNN(data)
 	%% Este método pone en ejecución un algoritmo genético para obtener la mejor configuración de
 	% el algoritmo de clasificación KNN para obtener una configuración de los parámetros óptima.
 	% La función de fitness que se usará en el genético, es proporcional al acuraccy rate obtenido
@@ -30,11 +30,11 @@ function [bestConfig] = geneticoKNN(infoAtr, data)
 	data = data(randperm(size(data,1),size(data,1)), :);
 	particiones = cell(1,m);
 	for i=1:m-1
-		particiones(i) = struct( ...
+		particiones{i} = struct( ...
 			'test', data((i-1)*floor(size(data,1)/m)+1:i*floor(size(data,1)/m), :), ...
 			'train', [data(1:(i-1)*floor(size(data,1)/m), :); data(i*floor(size(data,1)/m)+1:end, :)]);
 	end;
-	particiones(m) = struct( ...
+	particiones{m} = struct( ...
 		    'test', data((m-1)*floor(size(data,1)/m)+1:end,:), ...
 			'train', data(1:(m-1)*floor(size(data,1)/m),:));
 	
@@ -54,7 +54,7 @@ function [bestConfig] = geneticoKNN(infoAtr, data)
 	disp(sprintf('Mejor solucion obtenida (con fitness = %.3f):\n', fitness(M.bestSolution)));
 	M
 	bestConfig = decode(rangeParams, M.bestSolution);
-end;
+end
 
 function acc = validacionCruzada(particiones, params)
 	m = length(particiones);
@@ -85,7 +85,7 @@ function acc = validacionCruzada(particiones, params)
 			acc(j,k) = rendimiento(matConfusion, 1);
 		end;
 	end;
-end;
+end
 
 
 function N = encode(rangeParams)
@@ -95,7 +95,7 @@ function N = encode(rangeParams)
 		R(i,:)=rangeParams.(labels{i});
 	end;
 	N = sum(ceil(log2(R(:,2)-R(:,1)+1)));
-end;
+end
 
 function params = decode(rangeParams, C)
 	params=cell(size(C,1),1);
@@ -113,10 +113,10 @@ function params = decode(rangeParams, C)
 	b=[b b+S-1];
 	
 	for j=1:size(C,1)		
-		params(j) = struct();
+		params{j} = struct();
 		for i=1:length(labels)
 			params{j}.(labels{i}) = bin2dec(int2str(C(j,b(i,1):1:b(i,2)))) + R(i,1);
 		end;
 	end;
-end;
+end
 

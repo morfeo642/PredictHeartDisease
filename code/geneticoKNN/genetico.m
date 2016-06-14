@@ -79,7 +79,7 @@ function results = genetico(P, fitness, probSeleccion, progenitores, cruzamiento
 	Fvar = Fvar(1:min(iter, maxIter));
 	Mn = Mn(1:min(iter, maxIter));
 
-	results = struct("fitnessMean", Fmean, "fitnessMax", Fmax, "fitnessMin", Fmin, "fitnessVar", Fvar, "mutations", Mn,
-		"lastPopulation", P, "bestSolution", best);
-end;
+	results = struct('fitnessMean', Fmean, 'fitnessMax', Fmax, 'fitnessMin', Fmin, 'fitnessVar', Fvar, 'mutations', Mn, ...
+		'lastPopulation', P, 'bestSolution', best);
+end
 

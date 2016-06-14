@@ -48,4 +48,4 @@ function M = ejecutaGenetico(N, fitness)
 
 
 
-end;
+end

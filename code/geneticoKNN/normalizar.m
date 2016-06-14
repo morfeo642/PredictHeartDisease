@@ -8,4 +8,4 @@ function attrsNorm = normalizar ( attrs, infoAtr )
 	m = size(attrs, 1); % nº ejemplos.
 	%attrsNorm = (attrs - repmat(infoAtr(:,1)', m, 1)) ./ repmat((infoAtr(:,2) - infoAtr(:,1))',m,1);
 	attrsNorm = bsxfun(@rdivide, bsxfun(@minus, attrs, infoAtr(:,1)'), (infoAtr(:,2) - infoAtr(:,1))');
-	
+end
