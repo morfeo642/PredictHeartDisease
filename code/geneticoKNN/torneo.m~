@@ -11,8 +11,6 @@ function C2 = torneo(k, u, C, ps)
   
 	for i=1:u
 		R = randperm(size(C,1), k);
-		% C2(i,:) = C(R(find(max(ps(R)) == ps(R), 1)), :);
-        [~, pos] = max(ps(R));
-        C2(i,:) = C(R(pos),:);
-    end;
+		C2(i,:) = C(R(find(max(ps(R)) == ps(R), 1)), :);
+	end;
 end

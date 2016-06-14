@@ -52,8 +52,9 @@ function [bestConfig] = geneticoKNN(data)
 	elapsedTime = toc;
 	disp(sprintf('Ejecucion finalizada en %.3f segundos', elapsedTime));
 	disp(sprintf('Mejor solucion obtenida (con fitness = %.3f):\n', fitness(M.bestSolution)));
-	M
+	
 	bestConfig = decode(rangeParams, M.bestSolution);
+    bestConfig = bestConfig{1};
 end
 
 function acc = validacionCruzada(particiones, params)
@@ -82,7 +83,7 @@ function acc = validacionCruzada(particiones, params)
 			matConfusion = clasificar( clasificador, test, k, typeKNN, 0, typeDist);
 			
 			% Obtenemos el accuracy rate
-			acc(j,k) = rendimiento(matConfusion, 1);
+			acc(j,k) = rendimiento(matConfusion, 0);
 		end;
 	end;
 end
