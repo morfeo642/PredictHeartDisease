@@ -82,7 +82,7 @@ function acc = validacionCruzada(infoAtr, particiones, params)
 			reglas = generaReglasDifusas( train, fuzzyTrain, numLabels, typeP );
 			
 			% Clasificamos los ejemplos de test.
-			matConfusion = inferencia( reglas, fuzzyTest, 'uniW');
+			matConfusion = inferencia( reglas, fuzzyTest, 'uniW',typeT ,typeA);
 			
 			% Obtenemos el accuracy rate
 			acc(j,k) = rendimiento(matConfusion, 0);

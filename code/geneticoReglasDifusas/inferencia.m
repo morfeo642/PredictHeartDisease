@@ -1,4 +1,4 @@
-function [ mC ] = inferencia(rulesMat, fuzzyTst, modeW)
+function [ mC ] = inferencia(rulesMat, fuzzyTst, modeW, typeT, typeA)
 %% Realiza la inferencia del conjunto test con las reglas
 % modeW indica si tenemos un único peso por regla, o un peso por cada
 % clase para una regla.
@@ -26,9 +26,14 @@ aux(aux==0) = 1;
 % tenemos el grado de compatibilidad de cada ejemplo con todas la reglas.
 % cada dimension de la matriz mu indica el grado de compatibilidad de un
 % ejemplo con las n reglas
-mu = prod(aux,2);
 
-mu = bsxfun(fun,mu,W); 
+if typeT == 0 % T-norma minimo
+    mu = min(aux,[],2);
+    mu = bsxfun(@min,mu,W);
+else % T-norma producto
+    mu = prod(aux,2);
+    mu = bsxfun(fun,mu,W);
+end
 
 % Poderación
 mu(find(mu<0.5)) = mu(mu<0.5).^2;
@@ -36,12 +41,22 @@ mu(find(mu>=0.5)) = sqrt(mu(mu>=0.5));
 
 c = zeros(1,nC,size(mu,3));
 
-if strcmp(modeW,'uniW')    
-    for i = 1:nC
-        c(1,i,:) =  sum(mu(find(C==i),1,:));
+if strcmp(modeW,'uniW')
+    if typeA == 0 % Agregacion suma
+        for i = 1:nC
+            c(1,i,:) =  sum(mu(find(C==i),1,:));
+        end
+    else % Agregacion máximo
+        for i = 1:nC
+            c(1,i,:) =  max(mu(find(C==i),1,:));
+        end
     end
-else    
-    c(:,:,:) = sum(mu);
+else 
+    if typeA == 0 % Agregacion suma
+        c(:,:,:) = sum(mu);
+    else % Agregacion maximo
+        c(:,:,:) = max(mu);
+    end
 end
 
 % Tomamos los valores de la clase 1 y 2
@@ -50,7 +65,7 @@ end
 
 %m1 = sum(c1);
 %m2 = sum(c2);
-c
+
 [v,p] = max(c,[],2);
 
 % M�ximo por columnas y despu�s m�ximo por filas
