@@ -25,7 +25,7 @@ function results = genetico(P, fitness, probSeleccion, progenitores, cruzamiento
 	Fmin(1) = min(F);
 	Fvar(1) = var(F);
 	best = P(find(F == max(F), 1), :);
-	
+
 	while iter <= maxIter
 		fprintf('Iteracion %d...\n', iter);
 		
@@ -65,7 +65,6 @@ function results = genetico(P, fitness, probSeleccion, progenitores, cruzamiento
 		
 		Fmean(iter) = mean(F);
 		Fmax(iter) = max(F);
-		
 		Fmin(iter) = min(F);
 		Fvar(iter) = var(F);
 		
@@ -80,7 +79,7 @@ function results = genetico(P, fitness, probSeleccion, progenitores, cruzamiento
 	Fvar = Fvar(1:min(iter, maxIter));
 	Mn = Mn(1:min(iter, maxIter));
 
-	results = struct("fitnessMean", Fmean, "fitnessMax", Fmax, "fitnessMin", Fmin, "fitnessVar", Fvar, "mutations", Mn,
-		"lastPopulation", P, "bestSolution", best);
-end;
+	results = struct('fitnessMean', Fmean, 'fitnessMax', Fmax, 'fitnessMin', Fmin, 'fitnessVar', Fvar, 'mutations', Mn, ...
+		'lastPopulation', P, 'bestSolution', best);
+end
 

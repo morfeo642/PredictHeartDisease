@@ -4,7 +4,7 @@ function M = ejecutaGenetico(N, fitness)
 	% Este método devuelve los resultados de la ejecución del genético.
 	
 	% Tamaño de la población inicial
-	M = 20;
+	M = 12;
 
 	%% Inicializamos la población de individuos de forma aleatoria
 	P = poblacionInicial(M, N);
@@ -31,7 +31,7 @@ function M = ejecutaGenetico(N, fitness)
 	%sucesores = @(P, S) S; % Reemplazamiento generacional, la nueva generación de individuos estará compuesta solo por los hijos generados
 
 	%% Numero de iteraciones máximo a realizar por el genético.
-	maxIter = 10;
+	maxIter = 40;
 
 	%% Esta parámetro determina el nº iteraciones necesario para que, si no se ha obtenido un mejor resultado (cromosoma con mayor fitness), 
 	% durante esas iteracinoes, el algoritmo finalize
@@ -42,7 +42,10 @@ function M = ejecutaGenetico(N, fitness)
 	newblood = @(P) reemplazaPeoresIndividuos(0.3, P, fitness);
 
 	%% Lanzamos el genético con la configuración indicada.
-	M = genetico(P, fitness, probSeleccion, progenitores, ... 
+	[M] = genetico(P, fitness, probSeleccion, progenitores, ... 
 	cruzamiento, mutacion, sucesores, newblood, itersForConvergence, maxIter );
 
-end;
+
+
+
+end

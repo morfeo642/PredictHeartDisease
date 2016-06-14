@@ -7,4 +7,4 @@ function [S] = NCrossOver(C, n)
 	I = mod(floor((0:(m-1)) ./ (m/(n+1))), 2);
 
 	S = [ C(1,:).*I + C(2,:).*(1-I); C(1,:).*(1-I) + C(2,:).*I ];
-end;
+end

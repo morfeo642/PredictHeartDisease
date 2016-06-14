@@ -6,4 +6,4 @@ function M2 = mutacionSimple(Pm, M)
 	
 	I = (rand(g,1) <= Pm);
 	M2 = reshape(((1-I) .* reshape(M, [], 1))  + (I .* (rand(g,1) >= 0.5)), [], size(M,2));
-end;
+end

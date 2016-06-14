@@ -8,8 +8,11 @@ function C2 = torneo(k, u, C, ps)
 	% @param ps Son las probabilidades de cada individuo de ser escogidos como progenitores (debe ser proporcional al fitness)
 	N = size(C,2);
 	C2 = zeros(u, N);
+  
 	for i=1:u
 		R = randperm(size(C,1), k);
-		C2(i,:) = C(R(find(max(ps(R)) == ps(R), 1)), :);
-	end;
-end;
+		% C2(i,:) = C(R(find(max(ps(R)) == ps(R), 1)), :);
+        [~, pos] = max(ps(R));
+        C2(i,:) = C(R(pos),:);
+    end;
+end
