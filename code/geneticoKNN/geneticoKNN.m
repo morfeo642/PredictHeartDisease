@@ -75,10 +75,11 @@ function acc = validacionCruzada(particiones, params)
 			
 			
 			% Aprendemos el clasificador
-			clasificador = aprendizaje( train, typeKNN, KF );
+			
+			clasificador = aprendizaje( train, typeKNN, KF, typeDist );
 			
 			% Clasificamos los ejemplos de test.
-			matConfusion = clasificar( clasificador, test, k, typeKNN, 0);
+			matConfusion = clasificar( clasificador, test, k, typeKNN, 0, typeDist);
 			
 			% Obtenemos el accuracy rate
 			acc(j,k) = rendimiento(matConfusion, 1);

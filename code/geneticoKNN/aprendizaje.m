@@ -1,4 +1,4 @@
-function [ clasificador ] = aprendizaje( ejemplosTr,  tipoKNN, KF )
+function [ clasificador ] = aprendizaje( ejemplosTr,  tipoKNN, KF, tipoDist )
 %% Esta función obtiene el clasificador knn o un clasificador knn fuzzy a partir
 % del conjunto de entrenamiento.
 % @param ejemplosTr Es el conjunto de entrenamiento mediante el cual se
@@ -26,7 +26,11 @@ function [ clasificador ] = aprendizaje( ejemplosTr,  tipoKNN, KF )
 		nc = length(unique(clases));
 		
 		%% Calculamos las distancias de cada ejemplo del CE al resto de ejemplos.
-		dists = sqrt(distEuclidea(attrs, attrs));
+		if tipoDist == 0
+			dists = sqrt(distEuclidea(attrs, attrs));
+		else
+			dists = distanciaManhattan(attrs, attrs);
+		end;
 		% dists(i,j) = Es la distancia del ejemplo i-esimo del CE al ejemplo j-esimo
 		% del mismo conjunto.
 		

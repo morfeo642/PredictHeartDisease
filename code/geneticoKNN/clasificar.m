@@ -1,4 +1,4 @@
-function [ matConfusion ] = clasificar( clasificador, ejemplos, k, tipoKNN, tipoEj )
+function [ matConfusion ] = clasificar( clasificador, ejemplos, k, tipoKNN, tipoEj, tipoDist )
 %% Esta función clasifica un conjunto de ejemplos usando un clasificador previamente
 %% aprendido.
 %% @param clasificador Es el clasificador
@@ -7,6 +7,7 @@ function [ matConfusion ] = clasificar( clasificador, ejemplos, k, tipoKNN, tipo
 %% más cercanos
 %% @param tipoKNN Es el tipo de KNN (0 para KNN normal y 1 para fuzzy)
 %% @param tipoEj Es el tipo de ejemplos (1 si son ejemplos de CE o 0 si lo son de CT)
+%% @param tipoDist 0 para distancia euclidea, y 1 para distancia manhattan
 	attrsClasificador = clasificador.CE(:,1:end-1);  % Atributos de los ejemplos del clasificador
 	clasesClasificador = clasificador.CE(:,end); % Clases de los ejemplos del clasificador
 	
@@ -19,8 +20,12 @@ function [ matConfusion ] = clasificar( clasificador, ejemplos, k, tipoKNN, tipo
 	matConfusion = zeros(nc, nc);
 
 	%% Calculamos las distancias de cada ejemplo a los ejemplos del clasificador.
-	dists = distEuclidea(attrsClasificador, attrsEjemplos);
-		   
+	if tipoDist == 0
+		dists = distEuclidea(attrsClasificador, attrsEjemplos);
+	else
+		dists = distManhattan(attrsClasificador, attrsEjemplos).^2;
+		dists
+	end;   
 	%% Si estamos clasificando ejemplos del CE, las distancias de los ejemplos a clasificar
 	%% a estos mismos (porque está en el CE), serán infinitas para que no sean tomados como
 	%% vecinos más cercanos.
