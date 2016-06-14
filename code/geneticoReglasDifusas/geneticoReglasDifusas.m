@@ -17,10 +17,10 @@ function [bestConfig] = geneticoReglasDifusas(infoAtr, data)
 	% - tnorma para calcular los grados de compatibilidad: producto o mínimo
 	% - 
 	% - Calculo de distancias euclidea vs manhattan.
-	% En total, son 2x32x32x2=4096 posibles configuraciones
+	% En total, son 2x2x2x15=120 posibles configuraciones
 	
 	% Posibles valores que pueden tomar los parámetros del KNN
-	rangeParams = struct('typeKNN', [0, 1], 'k', [1, 32], 'KF',  [1, 32], 'typeDist', [0, 1]);
+	rangeParams = struct('typeP', [0 1], 'typeA', [0 1], 'typeT', [0 1], 'numLabels', [3 18]);
 
 	% Codificamos las configuraciones del algoritmo como cromosomas binarios de tamaño N
 	N = encode(rangeParams);
@@ -32,16 +32,16 @@ function [bestConfig] = geneticoReglasDifusas(infoAtr, data)
 	data = data(randperm(size(data,1),size(data,1)), :);
 	particiones = cell(1,m);
 	for i=1:m-1
-		particiones(i) = struct( ...
+		particiones{i} = struct( ...
 			'test', data((i-1)*floor(size(data,1)/m)+1:i*floor(size(data,1)/m), :), ...
 			'train', [data(1:(i-1)*floor(size(data,1)/m), :); data(i*floor(size(data,1)/m)+1:end, :)]);
 	end;
-	particiones(m) = struct( ...
+	particiones{m} = struct( ...
 		    'test', data((m-1)*floor(size(data,1)/m)+1:end,:), ...
 			'train', data(1:(m-1)*floor(size(data,1)/m),:));
 	
 	% Debemos definir la función de fitness que MAXIMIZARÁ el genético.
-	fitness = @(C) mean(validacionCruzada(particiones, decode(rangeParams, C)), 2);
+	fitness = @(C) mean(validacionCruzada(infoAtr, particiones, decode(rangeParams, C)), 2);
 	
 	
 	
@@ -55,18 +55,19 @@ function [bestConfig] = geneticoReglasDifusas(infoAtr, data)
 	disp(sprintf('Ejecucion finalizada en %.3f segundos', elapsedTime));
 	disp(sprintf('Mejor solucion obtenida (con fitness = %.3f):\n', fitness(M.bestSolution)));
 	bestConfig = decode(rangeParams, M.bestSolution);
-end;
+    bestConfig = bestConfig{1};
+end
 
-function acc = validacionCruzada(particiones, params)
+function acc = validacionCruzada(infoAtr, particiones, params)
 	m = length(particiones);
 	acc = zeros(size(params,1), m);
 	% Por cada configuración del KNN
 	for j=1:size(params,1)
 		% Obtenemos los parámetros de la configuración del KNN
-		typeKNN = params{j}.typeKNN;
-		k = params{j}.k;
-		KF = params{j}.KF;
-		typeDist = params{j}.typeDist;
+		typeP = params{j}.typeP;
+		typeA = params{j}.typeA;
+		typeT = params{j}.typeT;
+		numLabels = params{j}.numLabels;
 		
 		% Ejecutamos el algoritmo por cada partición; Aprendemos y clasificamos.
 		
@@ -74,17 +75,20 @@ function acc = validacionCruzada(particiones, params)
 			train = particiones{k}.train;
 			test = particiones{k}.test;
 			
+            fuzzyTrain = fuzzify(numLabels, train, infoAtr);
+            fuzzyTest = fuzzify(numLabels, test, infoAtr);
+            
 			% Aprendemos el clasificador
-			clasificador = aprendizaje( train, typeKNN, KF );
+			reglas = generaReglasDifusas( train, fuzzyTrain, numLabels, typeP );
 			
 			% Clasificamos los ejemplos de test.
-			matConfusion = clasificar( clasificador, test, k, typeKNN, 0);
+			matConfusion = inferencia( reglas, fuzzyTest, 'uniW');
 			
 			% Obtenemos el accuracy rate
 			acc(j,k) = rendimiento(matConfusion, 0);
 		end;
 	end;
-end;
+end
 
 
 function N = encode(rangeParams)
@@ -94,7 +98,7 @@ function N = encode(rangeParams)
 		R(i,:)=rangeParams.(labels{i});
 	end;
 	N = sum(ceil(log2(R(:,2)-R(:,1)+1)));
-end;
+end
 
 function params = decode(rangeParams, C)
 	params=cell(size(C,1),1);
@@ -112,10 +116,10 @@ function params = decode(rangeParams, C)
 	b=[b b+S-1];
 	
 	for j=1:size(C,1)		
-		params(j) = struct();
+		params{j} = struct();
 		for i=1:length(labels)
 			params{j}.(labels{i}) = bin2dec(int2str(C(j,b(i,1):1:b(i,2)))) + R(i,1);
 		end;
 	end;
-end;
+end
 

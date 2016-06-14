@@ -40,7 +40,7 @@ for i = 1:m
     currentClass = fuzzyRule(i,end-1);
     media = 0;
     
-    if strcmp(tipoPeso,'penalizar')
+    if tipoPeso == 1
         for c = 1:nC
             if c~=currentClass
                 media = media + sum(product(train(:,end)==c))/...

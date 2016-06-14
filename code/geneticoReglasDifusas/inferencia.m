@@ -1,4 +1,4 @@
-function [ class ] = inferencia(rulesMat, fuzzyTst, modeW)
+function [ mC ] = inferencia(rulesMat, fuzzyTst, modeW)
 %% Realiza la inferencia del conjunto test con las reglas
 % modeW indica si tenemos un único peso por regla, o un peso por cada
 % clase para una regla.
@@ -17,6 +17,7 @@ else
 end
 
 tst = permute(fuzzyTst(:,1:end-1),[3 2 1]);
+CTst = fuzzyTst(:,end);
 
 fun = @(rules,tst) rules.*tst;
 aux = bsxfun(fun,rules,tst);
@@ -37,10 +38,10 @@ c = zeros(1,nC,size(mu,3));
 
 if strcmp(modeW,'uniW')    
     for i = 1:nC
-        c(1,i,:) =  max(mu(find(C==i),1,:));
+        c(1,i,:) =  sum(mu(find(C==i),1,:));
     end
 else    
-    c(:,:,:) = max(mu);
+    c(:,:,:) = sum(mu);
 end
 
 % Tomamos los valores de la clase 1 y 2
@@ -49,7 +50,7 @@ end
 
 %m1 = sum(c1);
 %m2 = sum(c2);
-
+c
 [v,p] = max(c,[],2);
 
 % M�ximo por columnas y despu�s m�ximo por filas
@@ -59,7 +60,13 @@ end
 %p = p0(p1);
 p = reshape(p,size(p,3),1);
 
-class = p;
+mC = zeros(nC,nC);
+
+for k = 1:m
+    i=CTst(k);
+    j=p(k);
+    mC(i,j)=mC(i,j)+1;
+end
 
 end
 

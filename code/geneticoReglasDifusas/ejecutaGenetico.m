@@ -31,7 +31,7 @@ function M = ejecutaGenetico(N, fitness)
 	%sucesores = @(P, S) S; % Reemplazamiento generacional, la nueva generación de individuos estará compuesta solo por los hijos generados
 
 	%% Numero de iteraciones máximo a realizar por el genético.
-	maxIter = 40;
+	maxIter = 10;
 
 	%% Esta parámetro determina el nº iteraciones necesario para que, si no se ha obtenido un mejor resultado (cromosoma con mayor fitness), 
 	% durante esas iteracinoes, el algoritmo finalize
