@@ -1,4 +1,4 @@
-function [ dists ] = distEuclidea( attrsClasificador, attrsEjemplos )
+function [ dists ] = distManhattan( attrsClasificador, attrsEjemplos )
 %% Calcula la distancia manhattan de cada ejemplo al nuevo ejemplo a clasificar.
 % @param attrsClasificador Es una matriz con los atributos de los ejemplos del CE (una
 % fila por cada ejemplo)
