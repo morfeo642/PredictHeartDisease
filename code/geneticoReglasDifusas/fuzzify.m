@@ -38,13 +38,22 @@ for att = 1:numAtts
        maxBase = triPoint(att,label,3);
         
        %Usage of trimf to fuzzify the data acording to the (a, m, b) points defining the fuzzy set
-       fuzzyData(:,label+NUM_LABELS*(att-1)) = trimf(data(:,att),[minBase midBase maxBase]);
-
+       fuzzyData(:,label+NUM_LABELS*(att-1)) = trimf2(data(:,att),[minBase midBase maxBase]);
    end
 
 end
 
 % Store the class of each example
 fuzzyData(:,numAtts*NUM_LABELS+1) = data(:,end);
-
 end
+
+
+
+function Y = trimf2(X, PARAMS) 
+	a = PARAMS(1);
+	b = PARAMS(2);
+	c = PARAMS(3);
+	
+	Y = (((a <= X) .* (X <= b)) .* ((X-a)/(b-a))) + (((b <= X) .* (X <= c)) .* ((c-X) / (c-b)));
+end;
+
